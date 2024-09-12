@@ -12,18 +12,18 @@ class Animal {
     }
 
     // getters
-    get especie() {
+    getEspecie() {
         return this.#especie;
     }
 
-    get tamanhoOcupado() {
+    getTamanhoOcupado() {
         return this.#tamanhoOcupado;
     }
 
-    get biomas() {
+    getBiomas() {
         return this.#biomas;
     }
-    get dieta() {
+    getDieta() {
         return this.#dieta;
     }
 

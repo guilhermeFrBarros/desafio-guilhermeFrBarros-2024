@@ -3,28 +3,34 @@ class Recinto {
     #numero;
     #tamanho;
     #biomas;
-    #espacos;
+    #espacosOcupados;
     #animaisPresentes;
 
     constructor(numero, tamanho, biomas = [],
-        animaisPresentes = [], espacos = []) {
+        animaisPresentes = [], espacosOcupados) {
         this.#numero = numero;
         this.#tamanho = tamanho;
         this.#biomas = biomas;
-        this.#espacos = espacos;
+        this.#espacosOcupados = espacosOcupados;
         this.#animaisPresentes = animaisPresentes;
     }
 
-    get numero() {
+    getNumero() {
         return this.#numero;
     }
 
-    get tamanho() {
+    getTamanho() {
         return this.#tamanho;
     }
 
-    get biomas() {
+    getBiomas() {
         return this.#biomas;
+    }
+    getAnimaisPresentes() {
+        return this.#animaisPresentes;
+    }
+    getEspacosOcupados() {
+        return this.#espacosOcupados;
     }
 
     adicionarBioma(bioma) {
