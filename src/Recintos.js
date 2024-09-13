@@ -11,8 +11,8 @@ class Recinto {
         this.#numero = numero;
         this.#tamanho = tamanho;
         this.#biomas = biomas;
-        this.#espacosOcupados = espacosOcupados;
         this.#animaisPresentes = animaisPresentes;
+        this.#espacosOcupados = espacosOcupados;
     }
 
     getNumero() {
@@ -33,8 +33,12 @@ class Recinto {
         return this.#espacosOcupados;
     }
 
-    adicionarBioma(bioma) {
-        this.#biomas.push(bioma);
+    setEspacosOcupados(espacos) {
+        if (typeof espacos === 'number') {
+            this.#espacosOcupados = espacos;
+        } else {
+            throw new Error('O valor deve ser um número');
+        }
     }
 }
 
