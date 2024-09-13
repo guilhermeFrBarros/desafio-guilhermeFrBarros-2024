@@ -36,8 +36,9 @@ class RecintosZoo {
             if ("MACACO" === animalObjeto.getEspecie()) { recintosPossiveis = encontraRecintoParaMacaco(recintosPossiveis, quantidade); }
 
             recintosPossiveis = encontraRecintoPorBioma(animalObjeto, recintosPossiveis);
-            recintosPossiveis = encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animalObjeto, quantidade)
-            // return formataORetorno()
+            recintosPossiveis = encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animalObjeto, quantidade);
+
+            return formataORetorno(recintosPossiveis);
         } catch (e) {
             console.log(e);
             return e;
@@ -108,7 +109,7 @@ function encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animalObj, quant
         let tamanhoRecinto = r.getTamanho();
         let espacosOcupados = r.getEspacosOcupados();
         let tamanhoOcupadoAnimal = animalObj.getTamanhoOcupado();
-        if (r.getAnimaisPresentes().length > 1) espacosOcupados = espacosOcupados + 1;
+        if (r.getAnimaisPresentes().length > 0 && animalObj.getEspecie() !== r.getAnimaisPresentes()[0].getEspecie()) espacosOcupados = espacosOcupados + 1;
         if (tamanhoRecinto >= (espacosOcupados + (tamanhoOcupadoAnimal * quantidade))) {
             r.setEspacosOcupados(espacosOcupados + (tamanhoOcupadoAnimal * quantidade));
             for (let i = 0; i < quantidade; i++) {
@@ -120,6 +121,16 @@ function encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animalObj, quant
     return (recintosPossiveisTamanho.length > 0)
         ? recintosPossiveisTamanho : (() => { throw { erro: "Não há recinto viável" }; })();
 
+}
+
+function formataORetorno(recintosPossiveis) {
+    let arrayResposta = [];
+    for (const r of recintosPossiveis) {
+        let espacosLivres = r.getTamanho() - r.getEspacosOcupados();
+        let recinto = `Recinto ${r.getNumero()} (espaço livre: ${espacosLivres} total: ${r.getTamanho()})`;
+        arrayResposta.push(recinto);
+    }
+    return { recintosViaveis: arrayResposta }
 }
 
 export { RecintosZoo as RecintosZoo };
