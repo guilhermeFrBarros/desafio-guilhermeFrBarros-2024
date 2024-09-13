@@ -30,21 +30,25 @@ class RecintosZoo {
         try {
             if (quantidade < 1) { throw { erro: "Quantidade inválida" } }
             const animalObjeto = buscandoAnimalPorEspecie(animal, animais);
-            const recintosPossiveis = encontraRecintoPorDieta(animalObjeto, recintos);
+            let recintosPossiveis = encontraRecintoPorDieta(animalObjeto, recintos);
+            //Regras unicas de Hipopotamo e macaco
+            if ("HIPOPOTAMO" === animalObjeto.getEspecie()) recintosPossiveis = encontraRecintoParaHipotamo(recintosPossiveis);
+            if ("MACACO" === animalObjeto.getEspecie()) { recintosPossiveis = encontraRecintoParaMacaco(recintosPossiveis, quantidade); }
 
-
+            recintosPossiveis = encontraRecintoPorBioma(animalObjeto, recintosPossiveis);
+            recintosPossiveis = encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animalObjeto, quantidade)
+            // return formataORetorno()
         } catch (e) {
             console.log(e);
             return e;
         }
 
-
     }
 
 }
 
-function buscandoAnimalPorEspecie(animalParan, animaisE) {
-    const animal = animaisE.find(animal =>
+function buscandoAnimalPorEspecie(animalParan, animaisBD) {
+    const animal = animaisBD.find(animal =>
         animal.getEspecie() === animalParan);
 
     if (animal === undefined) { throw { erro: "Animal inválido" } }
@@ -53,19 +57,71 @@ function buscandoAnimalPorEspecie(animalParan, animaisE) {
 }
 
 function encontraRecintoPorDieta(animal, recintos) {
-    // console.log(leao);
     if (animal.getDieta() === "CARNIVORO") {
-        const recintosPossiveisCar = recintos.filter(animalR =>
-            animalR.getAnimaisPresentes()[0] === animal.getEspecie() ||
-            animalR.getAnimaisPresentes().length == 0);
+        const recintosPossiveisCar = recintos.filter(r => {
+            return r
+                .getAnimaisPresentes().length == 0 ?
+                true : r.getAnimaisPresentes()[0].getEspecie() == animal.getEspecie();
+        });
         return recintosPossiveisCar
     }
-    const recintosPossiveisHebiveros = recintos.slice();
+    const recintosPossiveisHeb = recintos.filter(r => r.getEspacosOcupados() == 0 ? true : r.getAnimaisPresentes()[0].getDieta() == animal.getDieta());
     return recintosPossiveisHeb;
 }
-// function encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animal, quantidade) {
 
-// }
+function encontraRecintoParaHipotamo(recintosPossiveis) {
+    const recintosPossiveisHipotamo = recintosPossiveis.filter(r =>
+        (
+            (r.getBiomas()[0] === "savana" || r.getBiomas()[0] === "rio")
+            && r.getEspacosOcupados() == 0
+        ) || (r.getBiomas()[0] === "savana" && r.getBiomas()[1] === "rio")
+    );
+
+    return recintosPossiveisHipotamo;
+}
+
+function encontraRecintoParaMacaco(recintosPossiveis, quantidade) {
+    const recintosPossiveisMacaco = recintosPossiveis.filter(r => {
+        if (r.getBiomas()[0] === "savana" || r.getBiomas()[1] === "floresta" || r.getBiomas()[0] === "floresta") {
+            // console.log("dentro: " + r.getNumero()) // ---------------------------------------
+            if ((quantidade > 1 && r.getEspacosOcupados() == 0)) { return true; }
+            if (r.getEspacosOcupados() > 0) {
+                if (r.getAnimaisPresentes()[0].getEspecie() !== "HIPOPOTAMO") return true;
+            }
+            if (r.getBiomas()[0] === "savana" && r.getBiomas()[1] === "rio" && r.getEspacosOcupados() > 0) return true;
+
+        }
+    })
+    return recintosPossiveisMacaco;
+}
+function encontraRecintoPorBioma(animal, recintosPossiveis) {
+    if (animal.getEspecie() === "MACACO" || animal.getEspecie() === "HIPOPOTAMO") {
+        return recintosPossiveis;
+    }
+    const recintosPorBioma = recintosPossiveis.filter(r => animal.getBiomas()[0] === r.getBiomas()[0]
+        || animal.getBiomas()[1] === r.getBiomas()[0])
+    return recintosPorBioma;
+}
+function encontraRecintoPorEspacoDisposnivel(recintosPossiveis, animalObj, quantidade) {
+    const recintosPossiveisTamanho = [];
+    for (const r of recintosPossiveis) {
+        let tamanhoRecinto = r.getTamanho();
+        let espacosOcupados = r.getEspacosOcupados();
+        let tamanhoOcupadoAnimal = animalObj.getTamanhoOcupado();
+        if (r.getAnimaisPresentes().length > 1) espacosOcupados = espacosOcupados + 1;
+        if (tamanhoRecinto >= (espacosOcupados + (tamanhoOcupadoAnimal * quantidade))) {
+            r.setEspacosOcupados(espacosOcupados + (tamanhoOcupadoAnimal * quantidade));
+            for (let i = 0; i < quantidade; i++) {
+                r.getAnimaisPresentes().push(animalObj);
+            }
+            recintosPossiveisTamanho.push(r);
+        }
+    }
+    return (recintosPossiveisTamanho.length > 0)
+        ? recintosPossiveisTamanho : (() => { throw { erro: "Não há recinto viável" }; })();
+
+}
+
 export { RecintosZoo as RecintosZoo };
 
 
