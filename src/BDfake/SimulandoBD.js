@@ -11,11 +11,11 @@ const hipopotamo = new Animal("HIPOPOTAMO", 4, ["savana", "rio"], "HERBIVORO");
 
 const animais = [leao, leopardo, crocodilo, macaco, gazela, hipopotamo]
 
-const recinto1 = new Recinto(1, 10, ["savana"], ["MACACO"], 3);
+const recinto1 = new Recinto(1, 10, ["savana"], [macaco], 3);
 const recinto2 = new Recinto(2, 5, ["floresta"], [], 0);
-const recinto3 = new Recinto(3, 7, ["savana", "rio"], ["GAZELA"], 2);
+const recinto3 = new Recinto(3, 7, ["savana", "rio"], [gazela], 2);
 const recinto4 = new Recinto(4, 8, ["rio"], [], 0);
-const recinto5 = new Recinto(5, 9, ["savana"], ["LEAO"], 3);
+const recinto5 = new Recinto(5, 9, ["savana"], [leao], 3);
 
 const recintos = [recinto1, recinto2, recinto3, recinto4, recinto5]
 
