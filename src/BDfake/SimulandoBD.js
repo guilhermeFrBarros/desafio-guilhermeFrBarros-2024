@@ -1,6 +1,6 @@
 // Simulando um banco dados
-import Animal from "../Animal.js";
-import Recinto from "../Recintos.js";
+import Animal from "../entities/Animal.js";
+import Recinto from "../entities/Recintos.js";
 
 const leao = new Animal("LEAO", 3, ["savana"], "CARNIVORO");
 const leopardo = new Animal("LEOPARDO", 2, ["savana"], "CARNIVORO");
